@@ -1,0 +1,47 @@
+const basket = document.getElementById('basket');
+const scoreDisplay = document.getElementById('score');
+const gameArea = document.getElementById('gameArea');
+let score = 0;
+
+let basketPosition = 160;
+const basketSpeed = 10;
+const gameWidth = gameArea.offsetWidth;
+
+document.addEventListener('keydown', moveBasket);
+
+function moveBasket(event) {
+  if (event.key === 'ArrowLeft' && basketPosition > 0) {
+    basketPosition -= basketSpeed;
+  } else if (event.key === 'ArrowRight' && basketPosition < gameWidth - 80) {
+    basketPosition += basketSpeed;
+  }
+  basket.style.left = basketPosition + 'px';
+}
+
+function createStar() {
+  const star = document.createElement('div');
+  star.classList.add('star');
+  star.style.left = Math.random() * (gameWidth - 20) + 'px';
+  gameArea.appendChild(star);
+
+  let starPosition = 0;
+  const starSpeed = 2 + Math.random() * 3;
+
+  function moveStar() {
+    if (starPosition >= gameArea.offsetHeight - 20) {
+      gameArea.removeChild(star);
+      if (parseInt(star.style.left) >= basketPosition && parseInt(star.style.left) <= basketPosition + 80) {
+        score++;
+        scoreDisplay.textContent = 'Score: ' + score;
+      }
+    } else {
+      starPosition += starSpeed;
+      star.style.top = starPosition + 'px';
+      requestAnimationFrame(moveStar);
+    }
+  }
+
+  moveStar();
+}
+
+setInterval(createStar, 1000);
